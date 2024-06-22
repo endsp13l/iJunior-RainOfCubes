@@ -6,22 +6,29 @@ using Random = UnityEngine.Random;
 public class CubeSpawner : MonoBehaviour
 {
     [SerializeField] private Cube _cubePrefab;
-    [SerializeField] private Transform _spawnPoint;
     [SerializeField] private int _poolCapacity = 50;
     [SerializeField] private int _poolMaxSize = 50;
     [SerializeField] private float _spawnDelay = 1f;
 
-    private ObjectPool<Cube> _cubePool;
+    [Header("SpawnBorders")] 
+    [SerializeField] private Transform _spawnHeight;
+    [SerializeField] private Transform _leftBorder;
+    [SerializeField] private Transform _rightBorder;
+    [SerializeField] private Transform _frontBorder;
+    [SerializeField] private Transform _backBorder;
+
+    private ObjectPool<GameObject> _cubePool;
 
     private Coroutine _coroutine;
     private bool _isRunning;
 
     private void Awake()
     {
-        _cubePool = new ObjectPool<Cube>(
+        _cubePool = new ObjectPool<GameObject>(
             createFunc: () => CreateCube(),
-            actionOnGet: ActionOnGet,
-            actionOnRelease: cube => cube.gameObject.SetActive(false),
+            actionOnGet: (obj) => ActionOnGet(obj),
+            actionOnRelease: (obj) => obj.SetActive(false),
+            actionOnDestroy: ActionOnDestroy,
             collectionCheck: true,
             defaultCapacity: _poolCapacity,
             maxSize: _poolMaxSize);
@@ -34,7 +41,7 @@ public class CubeSpawner : MonoBehaviour
     private void OnDisable()
     {
         _isRunning = false;
-        
+
         if (_coroutine != null)
         {
             StopCoroutine(_coroutine);
@@ -52,21 +59,34 @@ public class CubeSpawner : MonoBehaviour
         }
     }
 
-    private Cube CreateCube()
+    private GameObject CreateCube()
     {
-        return Instantiate(_cubePrefab, _spawnPoint.position, Quaternion.identity);
+        Cube cube = Instantiate(_cubePrefab);
+        cube.Destroyed += _cubePool.Release;
+
+        return cube.gameObject;
     }
 
-    private void ActionOnGet(Cube cube)
+    private void ActionOnGet(GameObject obj)
     {
-        cube.gameObject.SetActive(true);
+        obj.transform.position = GetRandomPosition();
+        obj.gameObject.SetActive(true);
+    }
+
+    private void ActionOnDestroy(GameObject obj)
+    {
+        Cube cube = obj.GetComponent<Cube>();
+
+        cube.Destroyed -= _cubePool.Release;
+        Destroy(obj);
     }
 
     private Vector3 GetRandomPosition()
     {
-        float x = Random.Range(-5f, 5f);
-        float y = Random.Range(-5f, 5f);
-        float z = Random.Range(-5f, 5f);
+        float x = Random.Range(_frontBorder.position.x, _backBorder.position.x);
+        float y = _spawnHeight.position.y;
+        float z = Random.Range(_leftBorder.position.z, _rightBorder.position.z);
+
         return new Vector3(x, y, z);
     }
 }
