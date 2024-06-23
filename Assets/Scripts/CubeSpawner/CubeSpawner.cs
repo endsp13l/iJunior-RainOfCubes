@@ -6,9 +6,9 @@ using Random = UnityEngine.Random;
 public class CubeSpawner : MonoBehaviour
 {
     [SerializeField] private Cube _cubePrefab;
-    [SerializeField] private int _poolCapacity = 50;
-    [SerializeField] private int _poolMaxSize = 50;
-    [SerializeField] private float _spawnDelay = 1f;
+    [SerializeField] private int _poolCapacity = 10;
+    [SerializeField] private int _poolMaxSize = 20;
+    [SerializeField] private float _spawnDelay = 0.5f;
 
     [Header("SpawnBorders")] 
     [SerializeField] private Transform _spawnHeight;
@@ -36,7 +36,7 @@ public class CubeSpawner : MonoBehaviour
 
     private void OnEnable() => _isRunning = true;
 
-    private void Start() => _coroutine = StartCoroutine(SpawnCubes());
+    private void Start() => _coroutine = StartCoroutine(Spawn());
 
     private void OnDisable()
     {
@@ -48,7 +48,7 @@ public class CubeSpawner : MonoBehaviour
         }
     }
 
-    private IEnumerator SpawnCubes()
+    private IEnumerator Spawn()
     {
         WaitForSeconds wait = new WaitForSeconds(_spawnDelay);
 

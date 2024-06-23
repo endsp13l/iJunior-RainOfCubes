@@ -7,21 +7,29 @@ using Random = System.Random;
 [RequireComponent(typeof(Renderer))]
 public class Cube : MonoBehaviour
 {
-    public event Action<GameObject> Destroyed;
 
-    private Coroutine _coroutine;
-    private ColorSetter _colorSetter;
     private Renderer _renderer;
+    private ColorSetter _colorSetter;
+    private Color _basicColor;
     private bool _isColorChanged;
 
+    private Coroutine _coroutine;
     private Random _random = new Random();
     private int _minLifetime = 2;
     private int _maxLifetime = 5;
+    public event Action<GameObject> Destroyed;
 
     private void Awake()
     {
-        _colorSetter = GetComponent<ColorSetter>();
         _renderer = GetComponent<Renderer>();
+        _colorSetter = GetComponent<ColorSetter>();
+        _basicColor = _renderer.material.color;
+    }
+
+    private void OnEnable()
+    {
+        _isColorChanged = false;
+        _renderer.material.color = _basicColor;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -33,11 +41,11 @@ public class Cube : MonoBehaviour
             _renderer.material.color = _colorSetter.GetRandomColor();
             _isColorChanged = true;
 
-            _coroutine = StartCoroutine(DestroyCube());
+            _coroutine = StartCoroutine(Destroy());
         }
     }
 
-    private IEnumerator DestroyCube()
+    private IEnumerator Destroy()
     {
         WaitForSeconds wait = new WaitForSeconds(GetRandomLifetime());
 
