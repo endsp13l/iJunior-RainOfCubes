@@ -3,13 +3,12 @@ using System.Collections;
 using UnityEngine;
 using Random = System.Random;
 
-[RequireComponent(typeof(ColorSetter))]
+[RequireComponent(typeof(ColorSelector))]
 [RequireComponent(typeof(Renderer))]
 public class Cube : MonoBehaviour
 {
-
     private Renderer _renderer;
-    private ColorSetter _colorSetter;
+    private ColorSelector _colorSelector;
     private Color _basicColor;
     private bool _isColorChanged;
 
@@ -17,12 +16,13 @@ public class Cube : MonoBehaviour
     private Random _random = new Random();
     private int _minLifetime = 2;
     private int _maxLifetime = 5;
+
     public event Action<GameObject> Destroyed;
 
     private void Awake()
     {
         _renderer = GetComponent<Renderer>();
-        _colorSetter = GetComponent<ColorSetter>();
+        _colorSelector = GetComponent<ColorSelector>();
         _basicColor = _renderer.material.color;
     }
 
@@ -38,7 +38,7 @@ public class Cube : MonoBehaviour
 
         if (isPlatform && _isColorChanged == false)
         {
-            _renderer.material.color = _colorSetter.GetRandomColor();
+            _renderer.material.color = _colorSelector.GetRandomColor();
             _isColorChanged = true;
 
             _coroutine = StartCoroutine(Destroy());
@@ -47,15 +47,11 @@ public class Cube : MonoBehaviour
 
     private IEnumerator Destroy()
     {
-        WaitForSeconds wait = new WaitForSeconds(GetRandomLifetime());
-
-        yield return wait;
+        yield return new WaitForSeconds(GetRandomLifetime());
         Destroyed?.Invoke(gameObject);
 
         if (_coroutine != null)
-        {
             StopCoroutine(_coroutine);
-        }
     }
 
     private float GetRandomLifetime() => _random.Next(_minLifetime, _maxLifetime);

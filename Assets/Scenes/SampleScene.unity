@@ -536,14 +536,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: -0.11344067, y: 0.70281863, z: -0.11508675, w: -0.6927714}
-  m_LocalPosition: {x: 27.233643, y: 15.936565, z: -3.5750177}
+  m_LocalRotation: {x: -0.12795655, y: 0.5381872, z: -0.09005185, w: -0.8281741}
+  m_LocalPosition: {x: 26.6, y: 16.1, z: -11.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 17.991, y: -65.927, z: 0.688}
 --- !u!1 &1166037852
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,9 +574,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cubePrefab: {fileID: 1289395504563093864, guid: c64ea16f564f57c4ebd09ffa13ac4999, type: 3}
-  _poolCapacity: 10
-  _poolMaxSize: 20
-  _spawnDelay: 0.5
+  _poolCapacity: 15
+  _poolMaxSize: 30
+  _spawnDelay: 0.25
   _spawnHeight: {fileID: 149349659}
   _leftBorder: {fileID: 1356831373}
   _rightBorder: {fileID: 1198749138}
