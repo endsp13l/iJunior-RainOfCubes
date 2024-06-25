@@ -148,3 +148,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _minLifetime: 2
   _maxLifetime: 5
+  _explosionForce: 20
+  _explosionRadius: 1
+  _cubesLayerMask:
+    serializedVersion: 2
+    m_Bits: 8

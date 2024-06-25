@@ -894,21 +894,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4068587727425170067, guid: 673621fb94acee74a864bfde705325b4, type: 3}
+      propertyPath: _explosionForce
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068587727425170067, guid: 673621fb94acee74a864bfde705325b4, type: 3}
+      propertyPath: _explosionRadius
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 4768112792759866710, guid: 673621fb94acee74a864bfde705325b4, type: 3}
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4768112792759866710, guid: 673621fb94acee74a864bfde705325b4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 7.21
       objectReference: {fileID: 0}
     - target: {fileID: 4768112792759866710, guid: 673621fb94acee74a864bfde705325b4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.403
+      value: 2.22
       objectReference: {fileID: 0}
     - target: {fileID: 4768112792759866710, guid: 673621fb94acee74a864bfde705325b4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1.47
       objectReference: {fileID: 0}
     - target: {fileID: 4768112792759866710, guid: 673621fb94acee74a864bfde705325b4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -941,6 +949,10 @@ PrefabInstance:
     - target: {fileID: 4840642030785307876, guid: 673621fb94acee74a864bfde705325b4, type: 3}
       propertyPath: m_Name
       value: Bomb
+      objectReference: {fileID: 0}
+    - target: {fileID: 4840642030785307876, guid: 673621fb94acee74a864bfde705325b4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
