@@ -5,7 +5,7 @@ using Random = System.Random;
 
 [RequireComponent(typeof(ColorSelector))]
 [RequireComponent(typeof(Renderer))]
-public class Cube : MonoBehaviour
+public class Cube : MonoBehaviour, IPoolable
 {
     private Renderer _renderer;
     private ColorSelector _colorSelector;

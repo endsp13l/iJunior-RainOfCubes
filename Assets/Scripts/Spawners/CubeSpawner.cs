@@ -18,9 +18,13 @@ public class CubeSpawner : MonoBehaviour
     [SerializeField] private Transform _backBorder;
 
     private ObjectPool<GameObject> _cubePool;
+    private int _spawnedCubesCount;
 
     private Coroutine _coroutine;
     private bool _isRunning;
+    
+    public int SpawnedCubesCount => _spawnedCubesCount;
+    public int ActiveCubesCount => _cubePool.CountActive;
 
     private void Awake()
     {

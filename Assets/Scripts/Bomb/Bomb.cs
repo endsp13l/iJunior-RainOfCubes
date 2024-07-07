@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
 [RequireComponent(typeof(Renderer))]
-public class Bomb : MonoBehaviour
+public class Bomb : MonoBehaviour, IPoolable
 {
+    private const int DefaultAlpha = 1;
+    
     [SerializeField] private int _minLifetime = 2;
     [SerializeField] private int _maxLifetime = 5;
     [SerializeField] private float _explosionForce = 20f;
@@ -17,7 +20,8 @@ public class Bomb : MonoBehaviour
     private Coroutine _destroyCoroutine;
     private Coroutine _dissappearCoroutine;
 
-
+    public event Action<GameObject> Destroyed;
+    
     private void Awake()
     {
         _material = GetComponent<Renderer>().material;
@@ -25,9 +29,10 @@ public class Bomb : MonoBehaviour
 
     private void OnEnable()
     {
+        _material.color = new Color(_material.color.r, _material.color.g, _material.color.b, DefaultAlpha);
         _destroyCoroutine = StartCoroutine(Activate());
     }
-
+    
     private IEnumerator Activate()
     {
         int lifetime = GetRandomLifetime();
@@ -62,7 +67,7 @@ public class Bomb : MonoBehaviour
         foreach (Rigidbody cube in GetCubes())
             cube.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
 
-        Destroy(gameObject);
+        Destroyed?.Invoke(gameObject);
     }
 
     private List<Rigidbody> GetCubes()
