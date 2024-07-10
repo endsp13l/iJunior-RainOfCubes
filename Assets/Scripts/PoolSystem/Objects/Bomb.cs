@@ -8,7 +8,7 @@ using Random = System.Random;
 public class Bomb : MonoBehaviour, IPoolable
 {
     private const int DefaultAlpha = 1;
-    
+
     [SerializeField] private int _minLifetime = 2;
     [SerializeField] private int _maxLifetime = 5;
     [SerializeField] private float _explosionForce = 20f;
@@ -21,7 +21,7 @@ public class Bomb : MonoBehaviour, IPoolable
     private Coroutine _dissappearCoroutine;
 
     public event Action<GameObject> Destroyed;
-    
+
     private void Awake()
     {
         _material = GetComponent<Renderer>().material;
@@ -32,7 +32,7 @@ public class Bomb : MonoBehaviour, IPoolable
         _material.color = new Color(_material.color.r, _material.color.g, _material.color.b, DefaultAlpha);
         _destroyCoroutine = StartCoroutine(Activate());
     }
-    
+
     private IEnumerator Activate()
     {
         int lifetime = GetRandomLifetime();

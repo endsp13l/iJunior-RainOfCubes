@@ -2,22 +2,21 @@ using System;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class Spawner <T> where T : MonoBehaviour, IPoolable
+public class Pool<T> where T : MonoBehaviour, IPoolable
 {
     private T _objectPrefab;
     private int _poolCapacity;
     private int _poolMaxSize;
-    
+
+    private ObjectPool<GameObject> _objectPool;
     private int _spawnedObjectsCount;
 
-    public ObjectPool<GameObject> ObjectPool;
     public int SpawnedObjectsCount => _spawnedObjectsCount;
-    public int ActiveObjectsCount => ObjectPool.CountActive;
+    public int ActiveObjectsCount => _objectPool.CountActive;
 
-    public event Action ObjectGetted;
-    public event Action ObjectReleased;
+    public event Action<Transform> ObjectReleased;
 
-    public Spawner(T objectPrefab, int poolCapacity, int poolMaxSize)
+    public Pool(T objectPrefab, int poolCapacity, int poolMaxSize)
     {
         _objectPrefab = objectPrefab;
         _poolCapacity = poolCapacity;
@@ -26,7 +25,7 @@ public class Spawner <T> where T : MonoBehaviour, IPoolable
 
     public void Initialize()
     {
-        ObjectPool = new ObjectPool<GameObject>(
+        _objectPool = new ObjectPool<GameObject>(
             createFunc: () => CreateObject(),
             actionOnGet: (obj) => ActionOnGet(obj),
             actionOnRelease: (obj) => ActionOnRelease(obj),
@@ -36,14 +35,18 @@ public class Spawner <T> where T : MonoBehaviour, IPoolable
             maxSize: _poolMaxSize);
     }
 
+    public GameObject Get()
+    {
+        return _objectPool.Get();
+    }
 
     private GameObject CreateObject()
     {
         GameObject obj = GameObject.Instantiate(_objectPrefab.gameObject);
-        
-        GetCurrentTypeComponent(obj).Destroyed += ObjectPool.Release;
+
+        GetCurrentTypeComponent(obj).Destroyed += _objectPool.Release;
         obj.SetActive(false);
-        
+
         return obj;
     }
 
@@ -51,23 +54,22 @@ public class Spawner <T> where T : MonoBehaviour, IPoolable
     {
         obj.SetActive(true);
         _spawnedObjectsCount++;
-
-        ObjectGetted?.Invoke();
     }
 
     private void ActionOnRelease(GameObject obj)
     {
-        obj.SetActive(false);
+        ObjectReleased?.Invoke(obj.transform);
+        _spawnedObjectsCount--;
 
-        ObjectReleased?.Invoke();
+        obj.SetActive(false);
     }
-    
+
     private void ActionOnDestroy(GameObject gameObject)
     {
-        GetCurrentTypeComponent(gameObject).Destroyed -= ObjectPool.Release;
+        GetCurrentTypeComponent(gameObject).Destroyed -= _objectPool.Release;
         GameObject.Destroy(gameObject);
     }
-    
+
     private T GetCurrentTypeComponent(GameObject obj)
     {
         obj.TryGetComponent(out T component);

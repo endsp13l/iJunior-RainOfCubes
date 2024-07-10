@@ -249,12 +249,7 @@ MonoBehaviour:
   _bombPrefab: {fileID: 4068587727425170067, guid: 673621fb94acee74a864bfde705325b4, type: 3}
   _poolCapacity: 15
   _poolMaxSize: 30
-  _spawnDelay: 0.5
-  _spawnHeight: {fileID: 149349659}
-  _leftBorder: {fileID: 1356831373}
-  _rightBorder: {fileID: 1198749138}
-  _frontBorder: {fileID: 77869284}
-  _backBorder: {fileID: 756188741}
+  _spawnDelay: 0.25
 --- !u!4 &507300595
 Transform:
   m_ObjectHideFlags: 0
@@ -635,6 +630,7 @@ MonoBehaviour:
   _rightBorder: {fileID: 1198749138}
   _frontBorder: {fileID: 77869284}
   _backBorder: {fileID: 756188741}
+  _bombSpawner: {fileID: 507300594}
 --- !u!4 &1166037854
 Transform:
   m_ObjectHideFlags: 0

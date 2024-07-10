@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Pool;
 using Random = UnityEngine.Random;
 
 public class CubeSpawner : MonoBehaviour
@@ -10,35 +9,33 @@ public class CubeSpawner : MonoBehaviour
     [SerializeField] private int _poolMaxSize = 30;
     [SerializeField] private float _spawnDelay = 0.25f;
 
-    [Header("SpawnAreaBorders")] 
-    [SerializeField] private Transform _spawnHeight;
+    [Header("SpawnAreaBorders")] [SerializeField]
+    private Transform _spawnHeight;
+
     [SerializeField] private Transform _leftBorder;
     [SerializeField] private Transform _rightBorder;
     [SerializeField] private Transform _frontBorder;
     [SerializeField] private Transform _backBorder;
 
-    private ObjectPool<GameObject> _cubePool;
+    [SerializeField] private BombSpawner _bombSpawner;
+
+    private Pool<Cube> _cubePool;
     private int _spawnedCubesCount;
 
     private Coroutine _coroutine;
     private bool _isRunning;
-    
-    public int SpawnedCubesCount => _spawnedCubesCount;
-    public int ActiveCubesCount => _cubePool.CountActive;
 
     private void Awake()
     {
-        _cubePool = new ObjectPool<GameObject>(
-            createFunc: () => CreateCube(),
-            actionOnGet: (obj) => ActionOnGet(obj),
-            actionOnRelease: (obj) => obj.SetActive(false),
-            actionOnDestroy: ActionOnDestroy,
-            collectionCheck: true,
-            defaultCapacity: _poolCapacity,
-            maxSize: _poolMaxSize);
+        _cubePool = new Pool<Cube>(_cubePrefab, _poolCapacity, _poolMaxSize);
+        _cubePool.Initialize();
     }
 
-    private void OnEnable() => _isRunning = true;
+    private void OnEnable()
+    {
+        _isRunning = true;
+        _cubePool.ObjectReleased += _bombSpawner.Spawn;
+    }
 
     private void Start() => _coroutine = StartCoroutine(Spawn());
 
@@ -48,6 +45,8 @@ public class CubeSpawner : MonoBehaviour
 
         if (_coroutine != null)
             StopCoroutine(_coroutine);
+
+        _cubePool.ObjectReleased -= _bombSpawner.Spawn;
     }
 
     private IEnumerator Spawn()
@@ -57,30 +56,8 @@ public class CubeSpawner : MonoBehaviour
         while (_isRunning)
         {
             yield return wait;
-            _cubePool.Get();
+            _cubePool.Get().transform.position = GetRandomPosition();
         }
-    }
-
-    private GameObject CreateCube()
-    {
-        Cube cube = Instantiate(_cubePrefab);
-        cube.Destroyed += _cubePool.Release;
-
-        return cube.gameObject;
-    }
-
-    private void ActionOnGet(GameObject obj)
-    {
-        obj.transform.position = GetRandomPosition();
-        obj.gameObject.SetActive(true);
-    }
-
-    private void ActionOnDestroy(GameObject obj)
-    {
-        Cube cube = obj.GetComponent<Cube>();
-
-        cube.Destroyed -= _cubePool.Release;
-        Destroy(obj);
     }
 
     private Vector3 GetRandomPosition()
