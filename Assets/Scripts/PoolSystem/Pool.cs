@@ -15,6 +15,7 @@ public class Pool<T> where T : MonoBehaviour, IPoolable
     public int ActiveObjectsCount => _objectPool.CountActive;
 
     public event Action<Transform> ObjectReleased;
+    public event Action ObjectGetted;
 
     public Pool(T objectPrefab, int poolCapacity, int poolMaxSize)
     {
@@ -37,6 +38,8 @@ public class Pool<T> where T : MonoBehaviour, IPoolable
 
     public GameObject Get()
     {
+        ObjectGetted?.Invoke();
+        
         return _objectPool.Get();
     }
 
@@ -59,7 +62,6 @@ public class Pool<T> where T : MonoBehaviour, IPoolable
     private void ActionOnRelease(GameObject obj)
     {
         ObjectReleased?.Invoke(obj.transform);
-        _spawnedObjectsCount--;
 
         obj.SetActive(false);
     }

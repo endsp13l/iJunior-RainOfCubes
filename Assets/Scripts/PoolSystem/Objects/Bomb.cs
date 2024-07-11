@@ -11,8 +11,8 @@ public class Bomb : MonoBehaviour, IPoolable
 
     [SerializeField] private int _minLifetime = 2;
     [SerializeField] private int _maxLifetime = 5;
-    [SerializeField] private float _explosionForce = 20f;
-    [SerializeField] private float _explosionRadius = 1f;
+    [SerializeField] private float _explosionForce = 750f;
+    [SerializeField] private float _explosionRadius = 10f;
     [SerializeField] private LayerMask _cubesLayerMask;
 
     private Random _random = new Random();

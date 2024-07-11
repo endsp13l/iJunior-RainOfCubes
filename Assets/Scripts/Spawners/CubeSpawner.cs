@@ -1,17 +1,14 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class CubeSpawner : MonoBehaviour
+public class CubeSpawner : Spawner<Cube>
 {
-    [SerializeField] private Cube _cubePrefab;
-    [SerializeField] private int _poolCapacity = 15;
-    [SerializeField] private int _poolMaxSize = 30;
     [SerializeField] private float _spawnDelay = 0.25f;
 
-    [Header("SpawnAreaBorders")] [SerializeField]
-    private Transform _spawnHeight;
-
+    [Header("SpawnAreaBorders")] 
+    [SerializeField] private Transform _spawnHeight;
     [SerializeField] private Transform _leftBorder;
     [SerializeField] private Transform _rightBorder;
     [SerializeField] private Transform _frontBorder;
@@ -19,22 +16,13 @@ public class CubeSpawner : MonoBehaviour
 
     [SerializeField] private BombSpawner _bombSpawner;
 
-    private Pool<Cube> _cubePool;
-    private int _spawnedCubesCount;
-
     private Coroutine _coroutine;
     private bool _isRunning;
-
-    private void Awake()
-    {
-        _cubePool = new Pool<Cube>(_cubePrefab, _poolCapacity, _poolMaxSize);
-        _cubePool.Initialize();
-    }
-
+    
     private void OnEnable()
     {
         _isRunning = true;
-        _cubePool.ObjectReleased += _bombSpawner.Spawn;
+        Pool.ObjectReleased += _bombSpawner.Spawn;
     }
 
     private void Start() => _coroutine = StartCoroutine(Spawn());
@@ -46,7 +34,7 @@ public class CubeSpawner : MonoBehaviour
         if (_coroutine != null)
             StopCoroutine(_coroutine);
 
-        _cubePool.ObjectReleased -= _bombSpawner.Spawn;
+        Pool.ObjectReleased -= _bombSpawner.Spawn;
     }
 
     private IEnumerator Spawn()
@@ -56,7 +44,7 @@ public class CubeSpawner : MonoBehaviour
         while (_isRunning)
         {
             yield return wait;
-            _cubePool.Get().transform.position = GetRandomPosition();
+            Pool.Get().transform.position = GetRandomPosition();
         }
     }
 
