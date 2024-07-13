@@ -1,11 +1,10 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class CubeSpawner : Spawner<Cube>
 {
-    [SerializeField] private float _spawnDelay = 0.25f;
+    [SerializeField] private float _spawnDelay = 0.5f;
 
     [Header("SpawnAreaBorders")] 
     [SerializeField] private Transform _spawnHeight;
@@ -19,15 +18,16 @@ public class CubeSpawner : Spawner<Cube>
     private Coroutine _coroutine;
     private bool _isRunning;
     
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         _isRunning = true;
         Pool.ObjectReleased += _bombSpawner.Spawn;
     }
 
     private void Start() => _coroutine = StartCoroutine(Spawn());
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
         _isRunning = false;
 
@@ -35,6 +35,8 @@ public class CubeSpawner : Spawner<Cube>
             StopCoroutine(_coroutine);
 
         Pool.ObjectReleased -= _bombSpawner.Spawn;
+
+        base.OnDisable();
     }
 
     private IEnumerator Spawn()

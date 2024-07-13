@@ -10,14 +10,14 @@ public class SpawnerView<T> : MonoBehaviour where T : MonoBehaviour, IPoolable
     [SerializeField] private TextMeshProUGUI _activeObjectsText;
 
     private void OnEnable() => _spawner.AmountChanged += UpdateTexts;
-    
-    private void Awake() => _objectNameText.text = $"{typeof(T).Name}";
+
+    private void Awake() => _objectNameText.text = $"Object: {typeof(T).Name}";
 
     private void OnDisable() => _spawner.AmountChanged -= UpdateTexts;
 
     private void UpdateTexts()
     {
-        _spawnedObjectsText.text = _spawner.Amount.ToString();
-        _activeObjectsText.text = _spawner.ActiveAmount.ToString();
+        _spawnedObjectsText.text = $"Spawned: {_spawner.Amount.ToString()}";
+        _activeObjectsText.text = $"Active: {_spawner.ActiveAmount.ToString()}";
     }
 }

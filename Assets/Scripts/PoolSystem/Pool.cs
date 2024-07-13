@@ -39,7 +39,7 @@ public class Pool<T> where T : MonoBehaviour, IPoolable
     public GameObject Get()
     {
         ObjectGetted?.Invoke();
-        
+
         return _objectPool.Get();
     }
 
@@ -55,6 +55,8 @@ public class Pool<T> where T : MonoBehaviour, IPoolable
 
     private void ActionOnGet(GameObject obj)
     {
+        StopObjectMovement(obj);
+
         obj.SetActive(true);
         _spawnedObjectsCount++;
     }
@@ -76,5 +78,14 @@ public class Pool<T> where T : MonoBehaviour, IPoolable
     {
         obj.TryGetComponent(out T component);
         return component;
+    }
+
+    private void StopObjectMovement(GameObject obj)
+    {
+        obj.TryGetComponent(out Rigidbody rigidbody);
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
+
+        obj.transform.rotation = Quaternion.identity;
     }
 }
